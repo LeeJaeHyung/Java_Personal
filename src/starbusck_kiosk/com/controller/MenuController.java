@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import starbusck_kiosk.com.module.Cart;
@@ -17,12 +18,16 @@ public class MenuController {
 
 	private Cart cart = new Cart();
 	private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	private int orderNumber = 1;
+	private int orderCount = 0;
+	private int totalPrice = 0;
+	private StringBuilder sb = new StringBuilder();
 	
 	public void run() throws IOException {
 		choiceOfCategory();
 	}
 	
-	public void choiceOfCategory()throws IOException {
+	public void choiceOfCategory()throws IOException {// 카테고리를 선택하는 메소드
 		File file = new File("data/drink");
 		String[] list = file.list();
 		
@@ -49,7 +54,20 @@ public class MenuController {
 					if(cart.getOrderList().size()==0) {
 						System.out.println("주문 내역이 없습니다.");
 					}else {
+						clearConsole();
 						cart.printOrder();
+						System.out.println("주문 하시겠습니까?");
+						System.out.print("임력[y/n]:");
+						String answer = br.readLine();
+						if(answer.equals("y")) {
+							clearConsole();
+							System.out.println("주문이 완료되었습니다.");
+							System.out.println("대기번호 : "+orderNumber);
+							Complete(cart.getOrderList());
+							cart.clearOrder();
+							Thread.sleep(3000);
+							orderNumber++;
+						}
 					}
 				}else if(key == list.length+1 ) {
 					System.out.println("주문내역이 초기화 되었습니다.");
@@ -57,6 +75,15 @@ public class MenuController {
 				}else if(key == list.length+2){
 					System.out.println("==================== 종료합니다.================================");
 					break;
+				}else if(key == -1) {
+					clearConsole();
+					System.out.println("[총 판매 내역 ]");
+					System.out.println(sb);
+					System.out.println("총 주문 개수 : "+(orderNumber-1));
+					System.out.println("총 판매 개수 : "+orderCount);
+					System.out.println("총 판매 금액 : "+totalPrice);
+					Thread.sleep(2000);
+					clearConsole();
 				}else {
 					clearConsole();
 					System.out.print("!!!!!!! 입력을 확인해주세요.!!!!!!!");
@@ -70,7 +97,7 @@ public class MenuController {
 		}
 	}
 	
-	public void choiceOfDrink(String dirKey) {
+	public void choiceOfDrink(String dirKey) {// 음료를 선택하는 클래스
 		File file = new File("data/drink/"+dirKey);
 		String[] list = file.list();
 		
@@ -122,9 +149,16 @@ public class MenuController {
 							System.out.print("입력 [y/n]:");
 							String answer = br.readLine();
 							if(answer.equals("y")) {
-								cart.addOrder(order);
+								cart.addOrder(order);clearConsole();
+							}else {
+								clearConsole();
+								System.out.println("주문이 완료 되었습니다.");
+								System.out.println("대기번호 : "+orderNumber);
+								Complete(cart.getOrderList());
+								cart.clearOrder();
+								Thread.sleep(3000);
+								orderNumber++;
 							}
-							clearConsole();
 							break;
 						case 2: 
 							clearConsole(); ois.close(); fis.close(); 
@@ -155,18 +189,14 @@ public class MenuController {
 				System.out.println("!!!!!!!숫자만 입력해주세요.!!!!!!!");
 				continue;
 			}
-			
-			
 		}
-		
-		
 	}
 	
-	public void clearConsole() {
+	public void clearConsole() {//console을 공백으로 채워줌
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	}
 	
-	public Order choiceOfSize(Menu m, String temp) throws NumberFormatException, IOException {
+	public Order choiceOfSize(Menu m, String temp) throws NumberFormatException, IOException {//사이즈를 선택해주는 메소드
 		Drink menu = (Drink)m;
 		System.out.println("사이즈 선택");
 		int sizeCount = (menu.getSize().length);
@@ -184,7 +214,7 @@ public class MenuController {
 		
 	}
 	
-	public String choiceOfTemp(Menu m) throws NumberFormatException, IOException {
+	public String choiceOfTemp(Menu m) throws NumberFormatException, IOException {//온도를 선택하는 메소드
 		Drink menu = (Drink)m;
 		String temp = menu.getTemperature();
 		if(temp.equals("ICED HOT")||temp.equals("ICED/HOT")) {
@@ -202,9 +232,19 @@ public class MenuController {
 			}else if(temp.equals("HOT ONLY")) {
 				return "HOT";
 			}else {
-				return "보틀";
+				return "보틀"; 
 			}
 		}
 		return temp;
+	}
+	
+	public void Complete(ArrayList<Order> orderList) {
+		int price = 0;
+		for(Order order : orderList) {
+			price += order.getPrice()*order.getCount();
+			sb.append(order.toString()+"\n");
+			orderCount += order.getCount();
+		}
+		totalPrice += price;
 	}
 }

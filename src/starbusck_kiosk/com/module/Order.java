@@ -47,7 +47,7 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "["+temp+"]"+ name +" "+ size + "사이즈 " + price + "원 " + count + "개";
+		return "["+temp+"] "+ name +" "+ size + "사이즈 " + price + "원 " + count + "개";
 	}
 	
 	
