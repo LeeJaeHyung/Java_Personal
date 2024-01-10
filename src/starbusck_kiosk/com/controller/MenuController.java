@@ -49,7 +49,7 @@ public class MenuController {
 					clearConsole();
 					choiceOfDrink(dirKey);
 					clearConsole();
-					continue;
+					break;
 				}else if(key == list.length){
 					if(cart.getOrderList().size()==0) {
 						System.out.println("주문 내역이 없습니다.");
@@ -222,7 +222,6 @@ public class MenuController {
 		System.out.print("입력 : ");
 		int count = Integer.parseInt(br.readLine());
 		return new Order(menu.getName(), menu.getSize()[key-1],menu.getPrice()[key-1], count, temp);
-		
 	}
 	
 	public String choiceOfTemp(Menu m) throws NumberFormatException, IOException {//온도를 선택하는 메소드
