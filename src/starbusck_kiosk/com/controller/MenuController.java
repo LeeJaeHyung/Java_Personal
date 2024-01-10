@@ -161,6 +161,7 @@ public class MenuController {
 							String answer = br.readLine();
 							if(answer.equals("y")) {
 								cart.addOrder(order);clearConsole();
+								choiceOfCategory();
 							}else {
 								clearConsole();
 								System.out.println("주문이 완료 되었습니다.");
