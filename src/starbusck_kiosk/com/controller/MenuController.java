@@ -70,8 +70,19 @@ public class MenuController {
 						}
 					}
 				}else if(key == list.length+1 ) {
-					System.out.println("주문내역이 초기화 되었습니다.");
-					cart.clearOrder();
+					clearConsole();
+					System.out.println("모든 주문을 취소하시겠습니까?");
+					System.out.print("입력[y/n]: ");
+				    String input = br.readLine();
+				    if(input.equals("y")) {
+				    	cart.clearOrder();
+				    	clearConsole();
+				    	System.out.println("주문이 취소 되었습니다!");
+				    	clearConsole();
+				    	Thread.sleep(3000);
+				    }
+					
+					
 				}else if(key == list.length+2){
 					System.out.println("==================== 종료합니다.================================");
 					break;
